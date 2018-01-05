@@ -12,6 +12,8 @@ import com.google.android.gms.vision.Frame;
 import com.google.android.gms.vision.face.Face;
 import com.google.android.gms.vision.face.FaceDetector;
 
+import timber.log.Timber;
+
 
 /**
  * Created by CompuCity on 1/5/2018.
@@ -44,7 +46,7 @@ public class Emojifier {
                 .build();
         Frame frame = new Frame.Builder().setBitmap(image).build();
         SparseArray<Face> faces = detector.detect(frame);
-        Log.d(TAG, "number of faces= " + faces.size());
+        Timber.d("number of faces= " + faces.size());
         Bitmap resultBitmap = image;
         if (faces.size() == 0) {
             Toast.makeText(context, R.string.no_faces_message, Toast.LENGTH_SHORT).show();
@@ -129,10 +131,10 @@ public class Emojifier {
     }
 
     private static Emoji whichEmoji(Face face) {
-        Log.d(TAG, "getClassifications: smilingProb = " + face.getIsSmilingProbability());
-        Log.d(TAG, "getClassifications: leftEyeOpenProb = "
+        Timber.d( "getClassifications: smilingProb = " + face.getIsSmilingProbability());
+        Timber.d("getClassifications: leftEyeOpenProb = "
                 + face.getIsLeftEyeOpenProbability());
-        Log.d(TAG, "getClassifications: rightEyeOpenProb = "
+        Timber.d("getClassifications: rightEyeOpenProb = "
                 + face.getIsRightEyeOpenProbability());
         boolean smiling = face.getIsSmilingProbability() > SMILING_PROP_THRESHOLD;
         boolean leftEyeClosed = face.getIsLeftEyeOpenProbability() < EYE_OPEN_PROP_THRESHOLD;
@@ -161,7 +163,7 @@ public class Emojifier {
             }
         }
         // Log the chosen Emoji
-        Log.d(TAG, "whichEmoji: " + emoji.name());
+        Timber.d("whichEmoji: " + emoji.name());
         return emoji;
     }
 

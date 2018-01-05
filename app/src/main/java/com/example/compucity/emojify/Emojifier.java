@@ -44,7 +44,7 @@ public class Emojifier {
                 .build();
         Frame frame = new Frame.Builder().setBitmap(image).build();
         SparseArray<Face> faces = detector.detect(frame);
-        Log.e(TAG, "number of faces= " + faces.size());
+        Log.d(TAG, "number of faces= " + faces.size());
         Bitmap resultBitmap = image;
         if (faces.size() == 0) {
             Toast.makeText(context, R.string.no_faces_message, Toast.LENGTH_SHORT).show();
@@ -129,10 +129,10 @@ public class Emojifier {
     }
 
     private static Emoji whichEmoji(Face face) {
-        Log.e(TAG, "getClassifications: smilingProb = " + face.getIsSmilingProbability());
-        Log.e(TAG, "getClassifications: leftEyeOpenProb = "
+        Log.d(TAG, "getClassifications: smilingProb = " + face.getIsSmilingProbability());
+        Log.d(TAG, "getClassifications: leftEyeOpenProb = "
                 + face.getIsLeftEyeOpenProbability());
-        Log.e(TAG, "getClassifications: rightEyeOpenProb = "
+        Log.d(TAG, "getClassifications: rightEyeOpenProb = "
                 + face.getIsRightEyeOpenProbability());
         boolean smiling = face.getIsSmilingProbability() > SMILING_PROP_THRESHOLD;
         boolean leftEyeClosed = face.getIsLeftEyeOpenProbability() < EYE_OPEN_PROP_THRESHOLD;
@@ -161,7 +161,7 @@ public class Emojifier {
             }
         }
         // Log the chosen Emoji
-        Log.e(TAG, "whichEmoji: " + emoji.name());
+        Log.d(TAG, "whichEmoji: " + emoji.name());
         return emoji;
     }
 

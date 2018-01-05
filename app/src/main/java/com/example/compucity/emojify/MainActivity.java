@@ -132,6 +132,7 @@ public class MainActivity extends AppCompatActivity {
         SHOWIMAGEMODE();
         //get the image
         mResultsBitmap = BitmapUtils.setPic(this, mTempPhotoPath);
+        Emojifier.detectFaces(this,mResultsBitmap);
         mImageView.setImageBitmap(mResultsBitmap);
     }
 

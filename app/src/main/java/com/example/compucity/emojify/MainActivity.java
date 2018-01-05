@@ -59,22 +59,58 @@ public class MainActivity extends AppCompatActivity {
 
 
     public void shareMe(View view) {
+        saveMe(view);
+        BitmapUtils.shareImage(this, mTempPhotoPath);
     }
 
     public void saveMe(View view) {
+        if (!IMAGESAVED) {
+            IMAGESAVED = true;
+            BitmapUtils.saveImage(this, mResultsBitmap);
+        } else {
+            Toast.makeText(this, "IMAGE SAVED ALREADY", Toast.LENGTH_LONG).show();
+        }
     }
 
     public void clearImage(View view) {
+        // Clear the image and toggle the view visibility
+        mImageView.setImageResource(0);
+        //call this mode to make the activity ready to take picture
+        IMAGECAPTUREREADYMODE();
+        // Delete the temporary image file
+        BitmapUtils.deleteImageFile(this, mTempPhotoPath);
+    }
+
+    private void IMAGECAPTUREREADYMODE() {
+        mEmojifyButton.setVisibility(View.VISIBLE);
+        mTitleTextView.setVisibility(View.VISIBLE);
+        mShareFab.setVisibility(View.GONE);
+        mSaveFab.setVisibility(View.GONE);
+        mClearFab.setVisibility(View.GONE);
+    }
+
+    private void SHOWIMAGEMODE() {
+        mEmojifyButton.setVisibility(View.GONE);
+        mTitleTextView.setVisibility(View.GONE);
+        mShareFab.setVisibility(View.VISIBLE);
+        mSaveFab.setVisibility(View.VISIBLE);
+        mClearFab.setVisibility(View.VISIBLE);
     }
 
     /* launch the camera and take photo
     * @param view the emojifyme button
     */
     public void emojifyMe(View view) {
+        //set IMAGESAVED to false to enable saving it
+        IMAGESAVED = false;
         // check for  write external storage permission
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
+        if (ContextCompat.checkSelfPermission(this,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                != PackageManager.PERMISSION_GRANTED) {
             //request permission
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_STORAGE_PERMISSION);
+            ActivityCompat.requestPermissions(this,
+                    new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                    REQUEST_STORAGE_PERMISSION);
         } else {
             launchCamera();
         }
@@ -94,6 +130,7 @@ public class MainActivity extends AppCompatActivity {
                 break;
             }
         }
+
     }
 
     @Override
@@ -101,22 +138,22 @@ public class MainActivity extends AppCompatActivity {
         switch (requestCode) {
             case REQUEST_IMAGE_CAPTURE: {
                 if (resultCode == RESULT_OK) {
-                    Bundle extras = data.getExtras();
-                    Bitmap thumbnail = (Bitmap) extras.get("data");
+                   /* Bundle extras = data.getExtras();
+                    Bitmap imageBitmap = (Bitmap) extras.get("data");*/
                     setImage();
                 }
             }
+            break;
         }
+
     }
 
     private void setImage() {
-        mEmojifyButton.setVisibility(View.GONE);
-        mTitleTextView.setVisibility(View.GONE);
-        mShareFab.setVisibility(View.VISIBLE);
-        mSaveFab.setVisibility(View.VISIBLE);
-        mClearFab.setVisibility(View.VISIBLE);
-        Bitmap image=BitmapUtils.setPic(this,mTempPhotoPath);
-        mImageView.setImageBitmap(image);
+        //setup the activity to show the image
+        SHOWIMAGEMODE();
+        //get the image
+        mResultsBitmap = BitmapUtils.setPic(this, mTempPhotoPath);
+        mImageView.setImageBitmap(mResultsBitmap);
     }
 
     private void launchCamera() {
@@ -125,19 +162,21 @@ public class MainActivity extends AppCompatActivity {
         //if there is an app to handle the intent
         if (cameraIntent.resolveActivity(getPackageManager()) != null) {
             //get the temporary image file
-            File imagefile=null;
+            File imagefile = null;
             try {
                 imagefile = BitmapUtils.createImageFile(this);
             } catch (IOException e) {
                 e.printStackTrace();
             }
             //if file created successfully
-            if(imagefile!=null){
+            if (imagefile != null) {
                 //get the full path of file
-                mTempPhotoPath=imagefile.getAbsolutePath();
+                mTempPhotoPath = imagefile.getAbsolutePath();
                 //get uri for the file
-                Uri uriForFile = FileProvider.getUriForFile(this, FILE_PROVIDER_AUTHORITY, imagefile);
-                cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT,uriForFile);
+                Uri uriForFile = FileProvider.getUriForFile(this,
+                        FILE_PROVIDER_AUTHORITY,
+                        imagefile);
+                cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, uriForFile);
                 startActivityForResult(cameraIntent, REQUEST_IMAGE_CAPTURE);
             }
 

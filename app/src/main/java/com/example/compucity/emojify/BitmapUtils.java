@@ -21,6 +21,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Environment;
+import android.support.v4.content.FileProvider;
 import android.util.DisplayMetrics;
 import android.view.WindowManager;
 import android.widget.Toast;
@@ -84,8 +85,20 @@ class BitmapUtils {
         return BitmapFactory.decodeFile(imagePath);
     }
 
-    public static void shareImage(Context context, String mTempPhotoPath) {
-
+    /**
+     * Helper method for sharing an image.
+     *
+     * @param context   The image context.
+     * @param imagePath The path of the image to be shared.
+     */
+    static void shareImage(Context context, String imagePath) {
+        // Create the share intent and start the share activity
+        File imageFile = new File(imagePath);
+        Intent shareIntent = new Intent(Intent.ACTION_SEND);
+        Uri photoURI = FileProvider.getUriForFile(context, FILE_PROVIDER_AUTHORITY, imageFile);
+        shareIntent.putExtra(Intent.EXTRA_STREAM, photoURI);
+        shareIntent.setType("image/*");
+        context.startActivity(shareIntent);
     }
 
     public static String saveImage(Context context, Bitmap image) {

@@ -58,28 +58,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    public void shareMe(View view) {
-        saveMe(view);
-        BitmapUtils.shareImage(this, mTempPhotoPath);
-    }
 
-    public void saveMe(View view) {
-        if (!IMAGESAVED) {
-            IMAGESAVED = true;
-            BitmapUtils.saveImage(this, mResultsBitmap);
-        } else {
-            Toast.makeText(this, "IMAGE SAVED ALREADY", Toast.LENGTH_LONG).show();
-        }
-    }
-
-    public void clearImage(View view) {
-        // Clear the image and toggle the view visibility
-        mImageView.setImageResource(0);
-        //call this mode to make the activity ready to take picture
-        IMAGECAPTUREREADYMODE();
-        // Delete the temporary image file
-        BitmapUtils.deleteImageFile(this, mTempPhotoPath);
-    }
 
     private void IMAGECAPTUREREADYMODE() {
         mEmojifyButton.setVisibility(View.VISIBLE);
@@ -182,5 +161,28 @@ public class MainActivity extends AppCompatActivity {
 
         }
 
+    }
+    public void shareMe(View view) {
+        //saveMe(view);
+        BitmapUtils.shareImage(this, mTempPhotoPath);
+    }
+
+    public void saveMe(View view) {
+        if (!IMAGESAVED) {
+            IMAGESAVED = true;
+            BitmapUtils.deleteImageFile(this, mTempPhotoPath);
+            BitmapUtils.saveImage(this, mResultsBitmap);
+        } else {
+            Toast.makeText(this, "IMAGE SAVED ALREADY", Toast.LENGTH_LONG).show();
+        }
+    }
+
+    public void clearImage(View view) {
+        // Clear the image and toggle the view visibility
+        mImageView.setImageResource(0);
+        //call this mode to make the activity ready to take picture
+        IMAGECAPTUREREADYMODE();
+        // Delete the temporary image file
+        BitmapUtils.deleteImageFile(this, mTempPhotoPath);
     }
 }

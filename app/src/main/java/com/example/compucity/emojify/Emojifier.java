@@ -25,10 +25,24 @@ public class Emojifier {
                 .build();
         Frame frame=new Frame.Builder().setBitmap(image).build();
         SparseArray<Face> faces = detector.detect(frame);
+        Log.e(TAG,"number of faces= "+faces.size());
         if(faces.size()==0){
             Toast.makeText(context,R.string.no_faces_message,Toast.LENGTH_SHORT).show();
+        }else{
+            for(int i=0;i<faces.size();i++){
+                Face face=faces.valueAt(i);
+                getClassification(face);
+            }
         }
-        Log.e(TAG,"number of faces= "+faces.size());
         detector.release();
     }
+
+    private static void getClassification(Face face) {
+        Log.e(TAG, "getClassifications: smilingProb = " + face.getIsSmilingProbability());
+        Log.e(TAG, "getClassifications: leftEyeOpenProb = "
+                + face.getIsLeftEyeOpenProbability());
+        Log.e(TAG, "getClassifications: rightEyeOpenProb = "
+                + face.getIsRightEyeOpenProbability());
+    }
+
 }
